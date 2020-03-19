@@ -17,6 +17,7 @@ const CompareCards = ({ playersId, type = 'people', fetchPlayers }) => {
 
   useEffect(() => {
     setIsLoading(true);
+    setTie(false);
     if (fetchPlayers) {
       Promise.all(playersId.map(id => fetchPlayer(type, id))).then(response => {
         setIsLoading(false);
@@ -24,7 +25,7 @@ const CompareCards = ({ playersId, type = 'people', fetchPlayers }) => {
           setTie(true);
           return setPlayers(response);
         } else if (
-          response[0].height === 'unknown' &&
+          response[0].height === 'unknown' ||
           response[1].height === 'unknown'
         ) {
           return setPlayers(response);
@@ -38,16 +39,16 @@ const CompareCards = ({ playersId, type = 'people', fetchPlayers }) => {
         return setPlayers(response);
       });
     }
-  }, [fetchPlayers]);
+  }, [fetchPlayers, playersId]);
 
   return (
     <Grid container justify="center">
-      {tie && <Typography>Tie</Typography>}
+      {tie && <Wrapper><Typography variant="h4">Tie</Typography></Wrapper>}
       {!isLoading ? (
         <Grid container justify="center" spacing={4}>
           {players.map(player => (
             <Grid item key={player.url}>
-              <PlayerCard name={player.name} winner={player.winner} />
+              <PlayerCard name={player.name} winner={player.winner} attribute={player.height}/>
             </Grid>
           ))}
         </Grid>

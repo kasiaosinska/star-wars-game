@@ -3,13 +3,16 @@ import PropTypes from 'prop-types';
 import { Card, CardContent, Typography } from '@material-ui/core';
 import { Wrapper } from './styled';
 
-const PlayerCard = ({ winner, name }) => {
+const PlayerCard = ({ winner, name, attribute }) => {
   return (
     <Wrapper winner={winner}>
-      <Card>
+      <Card justify="center">
         <CardContent>
           <Typography color="textSecondary" gutterBottom>
             {name}
+          </Typography>
+          <Typography color="textSecondary" gutterBottom>
+            Power: {attribute}
           </Typography>
         </CardContent>
       </Card>
@@ -20,6 +23,7 @@ const PlayerCard = ({ winner, name }) => {
 PlayerCard.propsTypes = {
   winner: PropTypes.bool,
   name: PropTypes.string,
+  attribute: PropTypes.string,
 };
 
 export default PlayerCard;

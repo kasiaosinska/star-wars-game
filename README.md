@@ -8,13 +8,13 @@ compare attributes and show the winner.
 #### Install dependencies
 
 ```bash
-npm i
+npm i / yarn
 ```
 
 #### Run
 
 ```bash
-npm start
+npm start / yarn start
 ```
 
 It will open automatically in http://localhost:3000

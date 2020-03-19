@@ -13,7 +13,8 @@ const getRandomInt = max => {
 };
 
 function App() {
-  const [unableButton, setUnableButton] = useState(true);
+  const [disabledButton, setDisabledButton] = useState(true);
+  const [buttonText, setButtonText] = useState('Play Game')
   const [peopleCount, setPeopleCount] = useState();
   const [playersId, setPlayersId] = useState([]);
   const [fetchPlayers, setFetchPlayers] = useState(false);
@@ -22,7 +23,7 @@ function App() {
     fetchAllPlayers('people')
       .then(response => {
         if (response.ok) {
-          setUnableButton(false);
+          setDisabledButton(false);
         }
         return response.json();
       })
@@ -39,6 +40,7 @@ function App() {
     } while (playerTwo === playerOne);
 
     setPlayersId([playerOne, playerTwo]);
+    setButtonText('Play Again');
     setFetchPlayers(true);
   };
 
@@ -48,10 +50,10 @@ function App() {
         <Button
           variant="contained"
           color="primary"
-          disabled={unableButton}
+          disabled={disabledButton}
           onClick={handleClick}
         >
-          Play Game
+          {buttonText}
         </Button>
         {fetchPlayers && (
           <CompareCards playersId={playersId} fetchPlayers={fetchPlayers} />
