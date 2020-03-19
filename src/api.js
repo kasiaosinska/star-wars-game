@@ -5,26 +5,14 @@ const checkResponseStatus = response => {
   throw new Error(response.statusText);
 };
 
-export const fetchPeople = () =>
-  fetch(`${baseUrl}people`)
+export const fetchAllPlayers = type =>
+  fetch(`${baseUrl}${type}/`)
     .then(checkResponseStatus)
-    .then(response => response.json())
+    .then(response => response)
     .catch(error => Promise.reject(error));
 
-export const fetchPerson = id =>
-  fetch(`${baseUrl}people/${id}`)
-    .then(checkResponseStatus)
-    .then(response => response.json())
-    .catch(error => Promise.reject(error));
-
-export const fetchStarships = () =>
-  fetch(`${baseUrl}starships`)
-    .then(checkResponseStatus)
-    .then(response => response.json())
-    .catch(error => Promise.reject(error));
-
-export const fetchStarship = id =>
-  fetch(`${baseUrl}starships/${id}`)
+export const fetchPlayer = (type, id) =>
+  fetch(`${baseUrl}${type}/${id}/`)
     .then(checkResponseStatus)
     .then(response => response.json())
     .catch(error => Promise.reject(error));
