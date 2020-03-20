@@ -7,7 +7,7 @@ import Loader from '../../common/Loader';
 import styled from 'styled-components';
 
 const Wrapper = styled.div`
-  margin: 20px;
+  margin: 15px;
 `;
 
 const CompareCards = ({ playerIds, resource, setScore }) => {

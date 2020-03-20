@@ -57,6 +57,7 @@ function App() {
   };
 
   const handleChange = event => {
+    setShowPlayers(false);
     setResource(event.target.name);
   };
 
