@@ -1,4 +1,4 @@
-const baseUrl = 'https://swapi.co/api/';
+const baseUrl = 'https://swapi.co/api';
 
 const checkResponseStatus = response => {
   if (response.ok) return response;
@@ -6,13 +6,13 @@ const checkResponseStatus = response => {
 };
 
 export const fetchAllPlayers = type =>
-  fetch(`${baseUrl}${type}/`)
+  fetch(`${baseUrl}/${type}`)
     .then(checkResponseStatus)
-    .then(response => response)
+    .then(response => response.json())
     .catch(error => Promise.reject(error));
 
 export const fetchPlayer = (type, id) =>
-  fetch(`${baseUrl}${type}/${id}/`)
+  fetch(`${baseUrl}/${type}/${id}`)
     .then(checkResponseStatus)
     .then(response => response.json())
     .catch(error => Promise.reject(error));

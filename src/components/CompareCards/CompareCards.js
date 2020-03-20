@@ -10,45 +10,51 @@ const Wrapper = styled.div`
   margin: 20px;
 `;
 
-const CompareCards = ({ playersId, type, fetchPlayers, handleSetScore }) => {
+const CompareCards = ({ playerIds, resource, setScore }) => {
   const [isLoading, setIsLoading] = useState(true);
   const [players, setPlayers] = useState([]);
   const [tie, setTie] = useState(false);
-  const [score, setScore] = useState({ one: 0, two: 0 });
 
-  const attribute = type === 'people' ? 'height' : 'crew';
+  const attribute = resource === 'people' ? 'height' : 'crew';
 
   useEffect(() => {
     setIsLoading(true);
     setTie(false);
-    if (fetchPlayers) {
-      Promise.all(playersId.map(id => fetchPlayer(type, id))).then(response => {
+
+    Promise.all(playerIds.map(id => fetchPlayer(resource, id))).then(
+      response => {
         setIsLoading(false);
-        if (response[0][attribute] === response[1][attribute]) {
+
+        const players = {};
+        players.one = response[0];
+        players.two = response[1];
+
+        const playerOneAttribute = players.one[attribute];
+        const playerTwoAttribute = players.two[attribute];
+
+        let winner;
+
+        if (playerOneAttribute === playerTwoAttribute) {
           setTie(true);
-          return setPlayers(response);
-        } else if (
-          response[0][attribute] === 'unknown' ||
-          response[1][attribute] === 'unknown'
-        ) {
-          return setPlayers(response);
-        } else if (
-          parseInt(response[0][attribute]) > parseInt(response[1][attribute])
-        ) {
-          response[0].winner = true;
-          setScore(prevScore => ({
-            one: prevScore.one + 1,
-            two: prevScore.two,
-          }));
-          return setPlayers(response);
+          return setPlayers(players);
         }
-        response[1].winner = true;
-        setScore(prevScore => ({ one: prevScore.one, two: prevScore.two + 1 }));
-        return setPlayers(response);
-      });
-    }
-    handleSetScore(score);
-  }, [fetchPlayers, playersId]);
+
+        if (playerOneAttribute === 'unknown' || playerTwoAttribute === 'unknown') {
+          return setPlayers(players);
+        }
+
+        winner = parseInt(playerOneAttribute) > parseInt(playerTwoAttribute) ? 'one' : 'two';
+        players[winner].winner = true;
+
+        setScore(prevScore => ({
+          ...prevScore,
+          [winner]: prevScore[winner] + 1,
+        }));
+
+        return setPlayers(players);
+      },
+    );
+  }, [playerIds]);
 
   return (
     <Grid container justify="center">
@@ -59,7 +65,7 @@ const CompareCards = ({ playersId, type, fetchPlayers, handleSetScore }) => {
       )}
       {!isLoading ? (
         <Grid container justify="center" spacing={4}>
-          {players.map(player => (
+          {Object.values(players).map(player => (
             <Grid item xs={12} sm={6} key={player.url}>
               <PlayerCard
                 name={player.name}
@@ -80,8 +86,8 @@ const CompareCards = ({ playersId, type, fetchPlayers, handleSetScore }) => {
 
 CompareCards.propTypes = {
   playersId: PropTypes.array,
-  type: PropTypes.string,
-  fetchPlayers: PropTypes.bool,
+  resource: PropTypes.string,
+  setScore: PropTypes.func,
 };
 
 export default CompareCards;

@@ -26,44 +26,38 @@ const getRandomInt = max => {
 };
 
 function App() {
-  const [disabledButton, setDisabledButton] = useState(true);
+  const [buttonDisabled, setButtonDisabled] = useState(true);
   const [buttonText, setButtonText] = useState('Play Game');
-  const [peopleCount, setPeopleCount] = useState();
-  const [playersId, setPlayersId] = useState([]);
-  const [fetchPlayers, setFetchPlayers] = useState(false);
-  const [score, setScore] = useState();
-  const [type, setType] = useState('people');
+  const [resourceCount, setResourceCount] = useState(null);
+  const [playerIds, setPlayerIds] = useState([]);
+  const [showPlayers, setShowPlayers] = useState(false);
+  const [score, setScore] = useState({ one: 0, two: 0 });
+  const [resource, setResource] = useState('people');
 
   useEffect(() => {
-    fetchAllPlayers(type)
-      .then(response => {
-        if (response.ok) {
-          setDisabledButton(false);
-        }
-        return response.json();
+    fetchAllPlayers(resource)
+      .then(result => {
+        setButtonDisabled(false);
+        return setResourceCount(result.count);
       })
-      .then(result => setPeopleCount(result.count))
       .catch(error => console.log(error));
-  }, [type]);
-
-  const handleScore = score => setScore(score);
+  }, [resource]);
 
   const handleClick = () => {
-    const playerOne = getRandomInt(peopleCount);
-    let playerTwo;
+    let playerOne = getRandomInt(resourceCount);
+    let playerTwo = getRandomInt(resourceCount);
 
     do {
-      playerTwo = getRandomInt(peopleCount);
+      playerTwo = getRandomInt(resourceCount);
     } while (playerTwo === playerOne);
 
-    setPlayersId([playerOne, playerTwo]);
+    setPlayerIds([playerOne, playerTwo]);
     setButtonText('Play Again');
-    setFetchPlayers(true);
-    handleScore();
+    setShowPlayers(true);
   };
 
-  const handleChange = e => {
-    setType(e.target.name);
+  const handleChange = event => {
+    setResource(event.target.name);
   };
 
   return (
@@ -76,7 +70,7 @@ function App() {
               <FormControlLabel
                 control={
                   <Checkbox
-                    checked={type === 'people'}
+                    checked={resource === 'people'}
                     onChange={handleChange}
                     name="people"
                   />
@@ -86,7 +80,7 @@ function App() {
               <FormControlLabel
                 control={
                   <Checkbox
-                    checked={type === 'starships'}
+                    checked={resource === 'starships'}
                     onChange={handleChange}
                     name="starships"
                   />
@@ -100,7 +94,7 @@ function App() {
           <Button
             variant="contained"
             color="primary"
-            disabled={disabledButton}
+            disabled={buttonDisabled}
             onClick={handleClick}
           >
             {buttonText}
@@ -108,15 +102,14 @@ function App() {
         </WrapperWithMargin>
         <WrapperWithMargin>
           <Typography component="p">
-            Score: {score?.one || 0} : {score?.two || 0}
+            Score: {score.one} : {score.two}
           </Typography>
         </WrapperWithMargin>
-        {fetchPlayers && (
+        {showPlayers && (
           <CompareCards
-            type={type}
-            playersId={playersId}
-            fetchPlayers={fetchPlayers}
-            handleSetScore={handleScore}
+            resource={resource}
+            playerIds={playerIds}
+            setScore={setScore}
           />
         )}
       </Grid>
