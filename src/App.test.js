@@ -1,6 +1,7 @@
 import React from 'react';
 import ReactDom from 'react-dom';
 import { render } from '@testing-library/react';
+import { create } from "react-test-renderer";
 import '@testing-library/jest-dom/extend-expect';
 import App from './App';
 
@@ -9,6 +10,11 @@ describe('App', () => {
     const div = document.createElement('div');
     ReactDom.render(<App />, div);
     ReactDom.unmountComponentAtNode(div);
+  });
+
+  it('matches the snapshot', () => {
+    const app = create(<App />);
+    expect(app.toJSON()).toMatchSnapshot();
   });
 
   describe('Button', () => {
