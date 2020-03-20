@@ -96,13 +96,14 @@ function App() {
             color="primary"
             disabled={buttonDisabled}
             onClick={handleClick}
+            data-testid="button"
           >
             {buttonText}
           </Button>
         </WrapperWithMargin>
         <WrapperWithMargin>
           <Typography component="p">
-            Score: {score.one} : {score.two}
+            Player One {score.one} : {score.two} Player Two
           </Typography>
         </WrapperWithMargin>
         {showPlayers && (
